@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 class CourseScreen extends StatelessWidget {
   static const routeName = '/course';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -11,23 +12,10 @@ class CourseScreen extends StatelessWidget {
         child: Column(
           children: [
             TabNewNPopularCourse(),
-            SearchBar(),
-            SizedBox(height: 20.0),
-            CategorySlider(),
-            SizedBox(height: 20.0),
+
 
             // loop for 10 times
-            for (int i = 0; i < 10; i++)
-              Container(
-                margin: EdgeInsets.only(bottom: 20.0),
-                child: VideoCard(
-                  thumbnailUrl: 'https://picsum.photos/200/300',
-                  title: 'Video Title $i',
-                  rating: 4.5,
-                  profileImageUrl: 'https://picsum.photos/200',
-                  channelName: 'Channel Name $i',
-                ),
-              ),
+
           ],
         ),
       ),
@@ -43,42 +31,199 @@ class TabNewNPopularCourse extends StatefulWidget {
 
 class _TabNewNPopularCourseState extends State<TabNewNPopularCourse> {
   bool isNewCourseSelected = true;
+  String searchValue = '';
+  // create list of  course mock data
+  List<Map<String, dynamic>> courseData = [
+    {
+      'id': 1,
+      'thumbnailUrl': 'https://picsum.photos/200/300',
+      'title': 'Video Title 1',
+      'rating': 4.5
+
+
+    },
+    {
+      'id': 2,
+      'thumbnailUrl': 'https://picsum.photos/200/300',
+      'title': 'Video Title 2',
+      'rating': 4.5
+
+
+    },
+    {
+      'id': 3,
+      'thumbnailUrl': 'https://picsum.photos/200/300',
+      'title': 'Video Title 3',
+      'rating': 4.5
+
+
+    },
+    {
+      'id': 4,
+      'thumbnailUrl': 'https://picsum.photos/200/300',
+      'title': 'Video Title 4',
+      'rating': 4.5
+
+
+    },
+    {
+      'id': 5,
+      'thumbnailUrl': 'https://picsum.photos/200/300',
+      'title': 'Video Title 5',
+      'rating': 4.5
+
+
+    },
+    {
+      'id': 6,
+      'thumbnailUrl': 'https://picsum.photos/200/300',
+      'title': 'Video Title 6',
+      'rating': 4.5
+
+
+    },
+    {
+      'id': 7,
+      'thumbnailUrl': 'https://picsum.photos/200/300',
+      'title': 'Video Title 7',
+      'rating': 4.5
+    }
+  ];
+
+  List<Map<String, dynamic>> _sortedCourse() {
+    // copy the articlesData list to avoid modifying the original list
+    var sortedCourses = List<Map<String, dynamic>>.from(courseData);
+    // filter the articles that contain the searchTerm in their title or description
+    sortedCourses = sortedCourses.where((article) {
+      return article['title'].toLowerCase().contains(searchValue.toLowerCase())
+         ;
+    }).toList();
+    // sort the filtered list
+    sortedCourses.sort((a, b) {
+      // compare the titles of the articles
+      var comparison = a['id'].compareTo(b['id']);
+      // if isNewArticleSelected is true, sort in ascending order
+      // otherwise, sort in descending order
+      return isNewCourseSelected ? comparison : -comparison;
+    });
+    return sortedCourses;
+  }
+
+
+
 
   @override
   Widget build(BuildContext context) {
     return Container(
       child: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+          Container(
 
-            children: [
-              ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(
-                    isNewCourseSelected ? AppColors.primaryColor : Colors.grey,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              border: Border.all(color: AppColors.appGray4.withOpacity(0.1)),
+              borderRadius: BorderRadius.circular(8),
+              // border color
+
+
+              color: Colors.white,
+            ),
+            height: 50,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  width: 208,
+                  height: 50,
+                  // color: Colors.transparent,
+                  decoration: BoxDecoration(
+                    // border: Border.all(color: Colors.grey.withOpacity(0.3)),
+                    // borderRadius: BorderRadius.circular( isNewCourseSelected ? 8 : 0),
+                    // border color
+                    color: Colors.white,
+                  ),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: isNewCourseSelected
+                          ? AppColors.primaryColor
+                          : Colors.white,
+                    // btn radius to 0
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        isNewCourseSelected = true;
+                      });
+                    },
+                    child: Text('New Course' ,
+                      style: TextStyle(
+                        color: isNewCourseSelected
+                            ? Colors.white
+                            : Colors.black,
+                      ),
+                    ),
                   ),
                 ),
-                onPressed: () {
-                  setState(() {
-                    isNewCourseSelected = true;
-                  });
-                },
-                child: Text('New Course'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    isNewCourseSelected = false;
-                  });
-                },
-                child: Text('Popular Course'),
-              ),
-            ],
+                Container(
+                  width: 208,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    // border: Border.all(color: Colors.grey.withOpacity(0.3)),
+                    // borderRadius: BorderRadius.circular( isNewCourseSelected ? 8 : 0),
+                    // border color
+                    color: Colors.white,
+                  ),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: isNewCourseSelected
+                          ? Colors.white
+                          :  AppColors.primaryColor,
+                      // btn radius to 0
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular( 8),
+                      ),
+
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        isNewCourseSelected = false;
+                      });
+                    },
+                    child: Text('Popular Course',style: TextStyle(
+                      color: isNewCourseSelected
+                          ? Colors.black
+                          : Colors.white,
+                    ),),
+                  ),
+                ),
+              ],
+            ),
           ),
-          isNewCourseSelected
-              ? Text('New Course Content')
-              : Text('Popular Course Content'),
+          SearchBar(
+            onSearch: (value) {
+              setState(() {
+                searchValue = value;
+              });
+            },
+          ),
+          SizedBox(height: 20.0),
+          CategorySlider(),
+          SizedBox(height: 20.0),
+          // loop for 10 times
+          ..._sortedCourse().map((course) {
+            return VideoCard(
+              thumbnailUrl: course['thumbnailUrl'],
+              title: course['title'],
+              rating: course['rating'],
+            );
+          }).toList(),
+
+
+
         ],
       ),
     );
@@ -88,6 +233,11 @@ class _TabNewNPopularCourseState extends State<TabNewNPopularCourse> {
 // search bar
 class SearchBar extends StatelessWidget {
   final TextEditingController _controller = TextEditingController();
+  final Function(String) onSearch;
+
+  SearchBar({
+    required this.onSearch,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -103,8 +253,15 @@ class SearchBar extends StatelessWidget {
         ),
         ElevatedButton(
           onPressed: () {
-            print('Search term: ${_controller.text}');
+            onSearch(_controller.text);
           },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.appWhite,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+
+            ),
+          ),
           child: Text('Search'),
         ),
       ],
@@ -189,9 +346,8 @@ class CategorySlider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 50.0,
+      height: 40.0,
       child: ListView.builder(
-        
         scrollDirection: Axis.horizontal,
         itemCount: categories.length,
         itemBuilder: (context, index) {
@@ -207,7 +363,7 @@ class CategorySlider extends StatelessWidget {
                 categories[index],
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 16.0,
+                  fontSize: 12.0,
                 ),
               ),
             ),
@@ -223,15 +379,14 @@ class VideoCard extends StatelessWidget {
   final String thumbnailUrl;
   final String title;
   final double rating;
-  final String profileImageUrl;
-  final String channelName;
+  final String profileImageUrl = 'https://images.thedirect.com/media/article_full/spider-man-tv-shows.jpg';
+  final String channelName = 'Setha Sensei';
 
   VideoCard({
     required this.thumbnailUrl,
     required this.title,
     required this.rating,
-    required this.profileImageUrl,
-    required this.channelName,
+
   });
 
   @override
@@ -239,8 +394,16 @@ class VideoCard extends StatelessWidget {
     return Container(
       // color: AppColors.blue.withOpacity(0.4),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.black.withOpacity(0.3)),
-        borderRadius: BorderRadius.circular(8),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            spreadRadius: 1,
+            blurRadius: 5,
+            offset: Offset(0, 3), // changes position of shadow
+          ),
+        ],
       ),
       child: Column(
         children: [
@@ -250,27 +413,75 @@ class VideoCard extends StatelessWidget {
             height: 200,
             decoration: BoxDecoration(
               color: Colors.yellow,
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(8),
+                topRight: Radius.circular(8),
+                bottomLeft: Radius.circular(0),
+                bottomRight: Radius.circular(0),
+              ),
               image: DecorationImage(
                 image: NetworkImage(thumbnailUrl),
                 fit: BoxFit.cover,
               ),
             ),
           ),
-          Text(title),
-          Text('Rating: $rating'),
-          Divider(color: Colors.black.withOpacity(0.5)),
-          Row(
+          Container(
+            padding: EdgeInsets.all(12.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+              children: [
+
+                Text(title ,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+
+                ),
+                Row(
+                  children: [
+                    Icon(Icons.star, color: Colors.yellow),
+                    Text(rating.toString()),
+                  ],
+                ),
+              ],
+            ),
+          ),
+
+          Container(
+            padding: EdgeInsets.all(12.0),
+            child: Divider(color: Colors.grey.withOpacity(0.3)),
+          ),
+        Container(
+          padding: EdgeInsets.all(12.0),
+          child: Row(
             children: [
               CircleAvatar(
                 backgroundImage: NetworkImage(profileImageUrl),
               ),
-              SizedBox(width: 8.0),
-              Text(channelName),
+              SizedBox(width: 10.0),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(channelName),
+                  Text('Cybersecurity' , style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w100,
+                  ),),
+                ],
+
+              ),
             ],
           ),
+        )
         ],
       ),
     );
   }
 }
+
+
+

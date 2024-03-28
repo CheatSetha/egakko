@@ -1,9 +1,14 @@
+import 'package:egakko/screen/home_screen.dart';
+import 'package:egakko/screen/login_screen.dart';
 import 'package:egakko/widgets/custom_button.dart';
 import 'package:egakko/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
 
 class RegisterScreen extends StatelessWidget {
   static const routeName = '/register';
+  var emailController = TextEditingController();
+  var passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -175,7 +180,7 @@ class RegisterScreen extends StatelessWidget {
                   TextButton(
                     onPressed: () {
                       // Handle register
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterScreen()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
                     },
                     child: Text(
                       'Log in',

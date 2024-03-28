@@ -7,6 +7,8 @@ import 'package:flutter/widgets.dart';
 
 class LoginScreen extends StatelessWidget {
   static const routeName = '/login';
+  var emailController = TextEditingController();
+  var passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,6 +33,8 @@ class LoginScreen extends StatelessWidget {
             CustomTextField(
               hintText: 'Email',
               keyboardType: TextInputType.emailAddress,
+
+
             ),
             SizedBox(height: 20),
             CustomTextField(
@@ -133,22 +137,24 @@ class LoginScreen extends StatelessWidget {
                     alignment: Alignment.centerLeft,
                     child: TextButton(
                       onPressed: () {},
-                      child: Container(
+                      child: Padding(
+                        padding: EdgeInsets.all(8.0), // adjust the padding as needed
+                        child: Container(
                           width: 100,
                           height: 60,
                           decoration: BoxDecoration(
                             border: Border.all(
-                              color: Color.fromARGB(112, 55, 54, 54)
-                                  .withOpacity(0.1),
+                              color: Color.fromARGB(112, 55, 54, 54).withOpacity(0.1),
                               width: 1,
                             ),
                             borderRadius: BorderRadius.circular(10),
                             image: DecorationImage(
-                              // assets\images\svg\authentication.svg
-                              image: AssetImage(
-                                  'assets/images/png/google.png'),
+                              image: AssetImage('assets/images/png/google.png'),
+                              fit: BoxFit.fitHeight,
                             ),
-                          )),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                   Align(
