@@ -1,4 +1,5 @@
 import 'package:egakko/core/cors.dart';
+import 'package:egakko/screen/ArticleDetail.dart';
 import 'package:egakko/screen/course_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -223,6 +224,7 @@ class _TabNewNPopularArticleState extends State<TabNewNPopularArticle> {
               title: article['title'],
               imageUrl: article['imageUrl'],
               description: article['description'],
+              id: article['id'],
             );
           }).toList(),
 
@@ -307,7 +309,7 @@ Widget _buildCardArticle(BuildContext context, String title , String imageUrl, S
                       borderRadius: BorderRadius.circular(8),
                       color: AppColors.appBlack)),
               Container(
-                width: 250,
+                width: 230,
                 height: 85,
                 margin: EdgeInsets.only(left: 13, top: 5, bottom: 15),
                 child: Column(
@@ -344,18 +346,30 @@ class ArticleCard extends StatelessWidget {
   final String title;
   final String imageUrl;
   final String description;
+  final int id;
 
   ArticleCard({
     required this.title,
     required this.imageUrl,
     required this.description,
+    required this.id,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(10),
-      child: _buildCardArticle(context,title,imageUrl,description),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ArticleDetailScreen(articleId: id),
+          ),
+        );
+      },
+      child: Container(
+        padding: EdgeInsets.all(10),
+        child: _buildCardArticle(context, title, imageUrl, description),
+      ),
     );
   }
 }

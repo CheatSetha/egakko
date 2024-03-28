@@ -2,6 +2,7 @@ import 'package:egakko/components/bottom_navigation_bar.dart';
 import 'package:egakko/core/cors.dart';
 import 'package:egakko/screen/article_screen.dart';
 import 'package:egakko/screen/course_screen.dart';
+import 'package:egakko/screen/login_screen.dart';
 
 import 'package:egakko/screen/profile_screen.dart';
 import 'package:flutter/material.dart';
@@ -32,41 +33,14 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey, // assign the _scaffoldKey here
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.menu), // This is the drawer icon
           onPressed: () => _scaffoldKey.currentState!.openDrawer(),
         ),
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              child: Text('Drawer Header'),
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-            ),
-            ListTile(
-              title: Text('Item 1'),
-              onTap: () {
-                // Update the state of the app
-                // Then close the drawer
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: Text('Item 2'),
-              onTap: () {
-                // Update the state of the app
-                // Then close the drawer
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        ),
-      ),
+      drawer: _buildDrawer(context),
       body: _children[_currentIndex],
       bottomNavigationBar: CustomBottomNavigationBar(
         currentIndex: _currentIndex,
@@ -377,6 +351,99 @@ Widget _buildBannerSlide(BuildContext context) {
             ),
           ],
         )),
+      ],
+    ),
+  );
+}
+
+Widget _buildDrawer(BuildContext context) {
+  return Drawer(
+    child: ListView(
+      padding: EdgeInsets.zero,
+      children: <Widget>[
+        DrawerHeader(
+
+          child: Container(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+               Container(
+
+                 width: 100,
+                  height: 100,
+                 child:  CircleAvatar(
+                     radius: 50,
+
+
+                     backgroundImage: NetworkImage(
+                         'https://images.thedirect.com/media/article_full/spider-man-tv-shows.jpg'
+
+                     )
+                 ),
+               ),
+                SizedBox(height: 30),
+               Container(
+                 padding: EdgeInsets.all(10),
+                 margin: EdgeInsets.only( left: 10),
+                 child:  Text(
+                   'Setha Sensei',
+                   style: TextStyle(
+                     color: Colors.white,
+                     fontSize: 20,
+                   ),
+                 ),
+               )
+
+              ],
+            ),
+          ),
+          decoration: BoxDecoration(
+            color: Colors.blue,
+          ),
+        ),
+        ListTile(
+
+          title: Text('Home'),
+          onTap: () {
+            // Update the state of the app
+            Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+            // ...
+            // Then close the drawer
+            Navigator.pop(context);
+          },
+        ),
+        ListTile(
+          title: Text('Courses'),
+          onTap: () {
+            // Update the state of the app
+            Navigator.push(context, MaterialPageRoute(builder: (context) => CourseScreen()));
+            // ...
+            // Then close the drawer
+            Navigator.pop(context);
+          },
+        ),
+        ListTile(
+          title: Text('Articles'),
+          onTap: () {
+            // Update the state of the app
+            Navigator.push(context, MaterialPageRoute(builder: (context) => ArticleScreen()));
+            // ...
+            // Then close the drawer
+            Navigator.pop(context);
+          },
+        ),
+        ListTile(
+          title: Text('Login'),
+          onTap: () {
+            // Update the state of the app
+            Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+            // ...
+            // Then close the drawer
+            Navigator.pop(context);
+          },
+        ),
+        
       ],
     ),
   );

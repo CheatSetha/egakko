@@ -1,4 +1,5 @@
 import 'package:egakko/core/cors.dart';
+import 'package:egakko/screen/CourseDetailScreen.dart';
 import 'package:flutter/material.dart';
 
 class CourseScreen extends StatelessWidget {
@@ -219,6 +220,7 @@ class _TabNewNPopularCourseState extends State<TabNewNPopularCourse> {
               thumbnailUrl: course['thumbnailUrl'],
               title: course['title'],
               rating: course['rating'],
+              id: course['id'], // add this line
             );
           }).toList(),
 
@@ -381,105 +383,118 @@ class VideoCard extends StatelessWidget {
   final double rating;
   final String profileImageUrl = 'https://images.thedirect.com/media/article_full/spider-man-tv-shows.jpg';
   final String channelName = 'Setha Sensei';
+  final int id;
 
   VideoCard({
     required this.thumbnailUrl,
     required this.title,
     required this.rating,
+    required this.id,
 
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      // color: AppColors.blue.withOpacity(0.4),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 5,
-            offset: Offset(0, 3), // changes position of shadow
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          // Image.network(thumbnailUrl),
-          Container(
-            width: double.infinity,
-            height: 200,
-            decoration: BoxDecoration(
-              color: Colors.yellow,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(8),
-                topRight: Radius.circular(8),
-                bottomLeft: Radius.circular(0),
-                bottomRight: Radius.circular(0),
-              ),
-              image: DecorationImage(
-                image: NetworkImage(thumbnailUrl),
-                fit: BoxFit.cover,
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return CourseDetailScreen(courseId: id);
+        }));
+      },
+      child: Container(
+        // color: AppColors.blue.withOpacity(0.4),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.1),
+              spreadRadius: 1,
+              blurRadius: 5,
+              offset: Offset(0, 3), // changes position of shadow
+            ),
+          ],
+        ),
+        child: Column(
+          children: [
+            // Image.network(thumbnailUrl),
+            Container(
+              width: double.infinity,
+              height: 200,
+              decoration: BoxDecoration(
+                color: Colors.yellow,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(8),
+                  topRight: Radius.circular(8),
+                  bottomLeft: Radius.circular(0),
+                  bottomRight: Radius.circular(0),
+                ),
+                image: DecorationImage(
+                  image: NetworkImage(thumbnailUrl),
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
-          ),
-          Container(
-            padding: EdgeInsets.all(12.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Container(
+              padding: EdgeInsets.all(12.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
-              children: [
-
-                Text(title ,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-
-                ),
-                Row(
-                  children: [
-                    Icon(Icons.star, color: Colors.yellow),
-                    Text(rating.toString()),
-                  ],
-                ),
-              ],
-            ),
-          ),
-
-          Container(
-            padding: EdgeInsets.all(12.0),
-            child: Divider(color: Colors.grey.withOpacity(0.3)),
-          ),
-        Container(
-          padding: EdgeInsets.all(12.0),
-          child: Row(
-            children: [
-              CircleAvatar(
-                backgroundImage: NetworkImage(profileImageUrl),
-              ),
-              SizedBox(width: 10.0),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(channelName),
-                  Text('Cybersecurity' , style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w100,
-                  ),),
-                ],
 
+                  Text(title ,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+
+                  ),
+                  Row(
+                    children: [
+                      Icon(Icons.star, color: Colors.yellow),
+                      Text(rating.toString()),
+                    ],
+                  ),
+                ],
               ),
-            ],
-          ),
-        )
-        ],
+            ),
+
+            Container(
+              padding: EdgeInsets.all(12.0),
+              child: Divider(color: Colors.grey.withOpacity(0.3)),
+            ),
+            Container(
+              padding: EdgeInsets.all(12.0),
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    backgroundImage: NetworkImage(profileImageUrl),
+                  ),
+                  SizedBox(width: 10.0),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(channelName),
+                      Text('Cybersecurity' , style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w100,
+                      ),),
+                    ],
+
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
       ),
-    );
+    )
+    ;
+
+
+
   }
 }
 
