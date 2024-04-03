@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:egakko/core/cors.dart';
 import 'package:egakko/screen/ArticleDetail.dart';
 import 'package:egakko/screen/course_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 
 class ArticleScreen extends StatelessWidget {
@@ -32,76 +35,91 @@ class TabNewNPopularArticle extends StatefulWidget {
 class _TabNewNPopularArticleState extends State<TabNewNPopularArticle> {
   bool isNewArticleSelected = true;
   String searchValue = '';
+  List<Map<String, dynamic>> articlesData = [];
+  Future<List<dynamic>> fetchArticles() async {
+    String articles = await rootBundle.loadString("lib/utils/articledata.json");
+    return jsonDecode(articles);
+  }
+  @override
+  void initState() {
+    super.initState();
+    fetchArticles().then((value) {
+      setState(() {
+        articlesData = List<Map<String, dynamic>>.from(value);
+      });
+    });
+  }
+
   // create a list of article mock data
-  final List<Map<String, dynamic>> articlesData = [
-    {
-      'id': 1,
-      'title': 'Article 1',
-      'imageUrl': 'assets/images/png/software-engineer.png',
-      'description': 'This is a description of article 1',
-    },
-    {
-      'id': 2,
-      'title': 'Article 2',
-      'imageUrl': 'assets/images/png/software-engineer.png',
-      'description': 'This is a description of article 2',
-    },
-    {
-      'id': 3,
-      'title': 'Article 3',
-      'imageUrl': 'assets/images/png/software-engineer.png',
-      'description': 'This is a description of article 3',
-    },
-    {
-      'id': 4,
-      'title': 'Article 4',
-      'imageUrl': 'assets/images/png/software-engineer.png',
-      'description': 'This is a description of article 4',
-    },
-    {
-      'id': 5,
-      'title': 'Article 5',
-      'imageUrl': 'assets/images/png/software-engineer.png',
-      'description': 'This is a description of article 5',
-    },
-    {
-      'id': 6,
-      'title': 'Article 6',
-      'imageUrl': 'assets/images/png/software-engineer.png',
-      'description': 'This is a description of article 6',
-    },
-    {
-      'id': 7,
-      'title': 'Article 7',
-      'imageUrl': 'assets/images/png/software-engineer.png',
-      'description': 'This is a description of article 7',
-    },
-    {
-      'id': 8,
-      'title': 'Article 8',
-      'imageUrl': 'assets/images/png/software-engineer.png',
-      'description': 'This is a description of article 8',
-    },
-    {
-      'id': 9,
-      'title': 'Article 9',
-      'imageUrl': 'assets/images/png/software-engineer.png',
-      'description': 'This is a description of article 9',
-    },
-    {
-      'id': 10,
-      'title': 'Article 10',
-      'imageUrl': 'assets/images/png/software-engineer.png',
-      'description': 'This is a description of article 10',
-    },
-  ];
+  // final List<Map<String, dynamic>> articlesData = [
+  //   {
+  //     'id': 1,
+  //     'title': 'Article 1',
+  //     'imageUrl': 'assets/images/png/software-engineer.png',
+  //     'description': 'This is a description of article 1',
+  //   },
+  //   {
+  //     'id': 2,
+  //     'title': 'Article 2',
+  //     'imageUrl': 'assets/images/png/software-engineer.png',
+  //     'description': 'This is a description of article 2',
+  //   },
+  //   {
+  //     'id': 3,
+  //     'title': 'Article 3',
+  //     'imageUrl': 'assets/images/png/software-engineer.png',
+  //     'description': 'This is a description of article 3',
+  //   },
+  //   {
+  //     'id': 4,
+  //     'title': 'Article 4',
+  //     'imageUrl': 'assets/images/png/software-engineer.png',
+  //     'description': 'This is a description of article 4',
+  //   },
+  //   {
+  //     'id': 5,
+  //     'title': 'Article 5',
+  //     'imageUrl': 'assets/images/png/software-engineer.png',
+  //     'description': 'This is a description of article 5',
+  //   },
+  //   {
+  //     'id': 6,
+  //     'title': 'Article 6',
+  //     'imageUrl': 'assets/images/png/software-engineer.png',
+  //     'description': 'This is a description of article 6',
+  //   },
+  //   {
+  //     'id': 7,
+  //     'title': 'Article 7',
+  //     'imageUrl': 'assets/images/png/software-engineer.png',
+  //     'description': 'This is a description of article 7',
+  //   },
+  //   {
+  //     'id': 8,
+  //     'title': 'Article 8',
+  //     'imageUrl': 'assets/images/png/software-engineer.png',
+  //     'description': 'This is a description of article 8',
+  //   },
+  //   {
+  //     'id': 9,
+  //     'title': 'Article 9',
+  //     'imageUrl': 'assets/images/png/software-engineer.png',
+  //     'description': 'This is a description of article 9',
+  //   },
+  //   {
+  //     'id': 10,
+  //     'title': 'Article 10',
+  //     'imageUrl': 'assets/images/png/software-engineer.png',
+  //     'description': 'This is a description of article 10',
+  //   },
+  // ];
   List<Map<String, dynamic>> _sortedArticles() {
     // copy the articlesData list to avoid modifying the original list
     var sortedArticles = List<Map<String, dynamic>>.from(articlesData);
     // filter the articles that contain the searchTerm in their title or description
     sortedArticles = sortedArticles.where((article) {
       return article['title'].toLowerCase().contains(searchValue.toLowerCase()) ||
-          article['description'].toLowerCase().contains(searchValue.toLowerCase());
+          article['content'].toLowerCase().contains(searchValue.toLowerCase());
     }).toList();
     // sort the filtered list
     sortedArticles.sort((a, b) {
@@ -222,8 +240,8 @@ class _TabNewNPopularArticleState extends State<TabNewNPopularArticle> {
           ..._sortedArticles().map((article) {
             return ArticleCard(
               title: article['title'],
-              imageUrl: article['imageUrl'],
-              description: article['description'],
+              imageUrl: article['thumbnailUrl'],
+              description: article['content'],
               id: article['id'],
             );
           }).toList(),
@@ -302,7 +320,7 @@ Widget _buildCardArticle(BuildContext context, String title , String imageUrl, S
                   ),
                   decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: AssetImage(
+                        image: NetworkImage(
                             imageUrl),
                         fit: BoxFit.cover,
                       ),
@@ -320,6 +338,7 @@ Widget _buildCardArticle(BuildContext context, String title , String imageUrl, S
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                     SizedBox(height: 5),
@@ -328,6 +347,7 @@ Widget _buildCardArticle(BuildContext context, String title , String imageUrl, S
                       style: TextStyle(
                         fontSize: 12,
                         color: Colors.grey,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ],

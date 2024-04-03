@@ -1,13 +1,17 @@
+import 'package:egakko/components/UserStatus.dart';
 import 'package:egakko/screen/home_screen.dart';
 import 'package:egakko/screen/register_screen.dart';
 import 'package:egakko/widgets/custom_button.dart';
 import 'package:egakko/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatelessWidget {
   static const routeName = '/login';
-  var emailController = TextEditingController();
+  var emailController = TextEditingController(
+    
+  );
   var passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -66,10 +70,21 @@ class LoginScreen extends StatelessWidget {
             CustomButton(
               text: 'Login',
               onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomeScreen()),
-                );
+                String username = emailController.text;
+                String password = passwordController.text;
+
+                if (username == 'setha' && password == "123") {
+                  Provider.of<UserStatus>(context, listen: false).login();
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomeScreen()),
+                  );
+                } else {
+                  // Show an error message
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Invalid username or password $username $password')),
+                  );
+                }
               },
             ),
 
@@ -164,6 +179,7 @@ class LoginScreen extends StatelessWidget {
                       child: Container(
                           width: 100,
                           height: 60,
+
                           decoration: BoxDecoration(
                             border: Border.all(
                               color: Color.fromARGB(112, 55, 54, 54)
@@ -171,12 +187,26 @@ class LoginScreen extends StatelessWidget {
                               width: 1,
                             ),
                             borderRadius: BorderRadius.circular(10),
-                            image: DecorationImage(
-                              // assets\images\svg\authentication.svg
-                              image: AssetImage(
-                                  'assets/images/png/apple.png'),
-                            ),
-                          )),
+                            // image: DecorationImage(
+                            //   // assets\images\svg\authentication.svg
+                            //   image: AssetImage(
+                            //       'assets/images/png/apple.png'),
+                            // ),
+
+                          ),
+                        child: Container(
+                          width: 30,
+                          height: 30,
+                          child: Image.asset(
+                            'assets/images/png/apple.png',
+                            width: 30, height: 30,
+                            fit: BoxFit.fitHeight,
+                            // fit: BoxFit.fill,
+
+                          ),
+                        )
+
+                      ),
                     ),
                   ),
                 ],
@@ -186,7 +216,7 @@ class LoginScreen extends StatelessWidget {
             // text with link to register at the bottom "Don't have an account? Register"
             Container(
               
-              margin: EdgeInsets.only(top: 160),
+              margin: EdgeInsets.only(top: 70),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

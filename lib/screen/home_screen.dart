@@ -7,6 +7,10 @@ import 'package:egakko/screen/login_screen.dart';
 import 'package:egakko/screen/profile_screen.dart';
 import 'package:flutter/material.dart';
 
+
+
+
+
 class HomeScreen extends StatefulWidget {
   static const routeName = '/home';
   @override
@@ -51,44 +55,54 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 class HomeTab extends StatelessWidget {
-  var coursedata  =  [
+  List<Map<String, dynamic>> coursedata  =  [
     {
-      "imagePath": "https://picsum.photos/id/1/200/300",
-      "title": "Course 1"
+      "id": 1,
+      "imagePath": "https://imgs.search.brave.com/FWLGYz_ismHpqRTDDZqvh3dnNKfNUAYrIPSKzBLDRl8/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5nZWVrc2Zvcmdl/ZWtzLm9yZy93cC1j/b250ZW50L2Nkbi11/cGxvYWRzLzIwMjAw/NjA1MjI1NTU1L0hv/dy1TaG91bGQtSS1T/dGFydC1MZWFybmlu/Zy1FdGhpY2FsLUhh/Y2tpbmctb24tTXkt/T3duLnBuZw",
+      "title": "Intro to Programming Training Course"
     },
     {
+      "id": 2,
       "imagePath": "https://picsum.photos/id/2/200/300",
       "title": "Course 2"
     },
     {
+      "id": 3,
       "imagePath": "https://picsum.photos/id/3/200/300",
       "title": "Course 3"
     },
     {
+      "id": 4,
       "imagePath": "https://picsum.photos/id/4/200/300",
       "title": "Course 4"
     },
     {
+      "id": 5,
       "imagePath": "https://picsum.photos/id/5/200/300",
       "title": "Course 5"
     },
     {
+      "id": 6,
       "imagePath": "https://picsum.photos/id/6/200/300",
       "title": "Course 6"
     },
     {
+      "id": 7,
       "imagePath": "https://picsum.photos/id/7/200/300",
       "title": "Course 7"
     },
     {
+      "id": 8,
       "imagePath": "https://picsum.photos/id/8/200/300",
       "title": "Course 8"
     },
     {
+      "id": 9,
       "imagePath": "https://picsum.photos/id/9/200/300",
       "title": "Course 9"
     },
     {
+      "id": 10,
       "imagePath": "https://picsum.photos/id/10/200/300",
       "title": "Course 10"
     }
@@ -152,7 +166,7 @@ class HomeTab extends StatelessWidget {
                     ))),
             SizedBox(height: 20),
             for (var i = 0; i < coursedata.length; i++) ...[
-              _buildCardPopCourse(context),
+              _buildCardPopCourse(context, coursedata[i]['title'], coursedata[i]['imagePath'],),
               SizedBox(height: 20),
             ]
           ],
@@ -162,7 +176,7 @@ class HomeTab extends StatelessWidget {
   }
 }
 
-Widget _buildCardPopCourse(BuildContext context) {
+Widget _buildCardPopCourse(BuildContext context, String title, String thumnailUrl) {
   return Align(
 
    
@@ -194,7 +208,7 @@ Widget _buildCardPopCourse(BuildContext context) {
                   decoration: BoxDecoration(
                       image: DecorationImage(
                         image: AssetImage(
-                            'assets/images/png/software-engineer.png'),
+                            thumnailUrl),
                         fit: BoxFit.cover,
                       ),
                       borderRadius: BorderRadius.circular(8),
@@ -204,7 +218,7 @@ Widget _buildCardPopCourse(BuildContext context) {
                 height: 85,
                 margin: EdgeInsets.only(left: 13, top: 5, bottom: 15),
                 child: Text(
-                  "Improve Your English Skills Specialization",
+                  title,
                   maxLines: 2,
                   overflow: TextOverflow.clip,
                   style: TextStyle(

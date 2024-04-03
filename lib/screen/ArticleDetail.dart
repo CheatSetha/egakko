@@ -1,93 +1,55 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-class ArticleDetailScreen extends StatelessWidget {
+class ArticleDetailScreen extends StatefulWidget {
   final int articleId;
-  final List<Map<String, dynamic>> articlesData = [
-    {
-      'id': 1,
-      'title': 'Article 1',
-      'imageUrl': 'assets/images/png/software-engineer.png',
-      'description': 'This is a description of article 1',
-    },
-    {
-      'id': 2,
-      'title': 'Article 2',
-      'imageUrl': 'assets/images/png/software-engineer.png',
-      'description': 'This is a description of article 2',
-    },
-    {
-      'id': 3,
-      'title': 'Article 3',
-      'imageUrl': 'assets/images/png/software-engineer.png',
-      'description': 'This is a description of article 3',
-    },
-    {
-      'id': 4,
-      'title': 'Article 4',
-      'imageUrl': 'assets/images/png/software-engineer.png',
-      'description': 'This is a description of article 4',
-    },
-    {
-      'id': 5,
-      'title': 'Article 5',
-      'imageUrl': 'assets/images/png/software-engineer.png',
-      'description': 'This is a description of article 5',
-    },
-    {
-      'id': 6,
-      'title': 'Article 6',
-      'imageUrl': 'assets/images/png/software-engineer.png',
-      'description': 'This is a description of article 6',
-    },
-    {
-      'id': 7,
-      'title': 'Article 7',
-      'imageUrl': 'assets/images/png/software-engineer.png',
-      'description': 'This is a description of article 7',
-    },
-    {
-      'id': 8,
-      'title': 'Article 8',
-      'imageUrl': 'assets/images/png/software-engineer.png',
-      'description': 'This is a description of article 8',
-    },
-    {
-      'id': 9,
-      'title': 'Article 9',
-      'imageUrl': 'assets/images/png/software-engineer.png',
-      'description': 'This is a description of article 9',
-    },
-    {
-      'id': 10,
-      'title': 'Article 10',
-      'imageUrl': 'assets/images/png/software-engineer.png',
-      'description': 'This is a description of article 10',
-    },
-  ];
 
   ArticleDetailScreen({required this.articleId});
+
+  @override
+  _ArticleDetailScreenState createState() => _ArticleDetailScreenState();
+}
+
+class _ArticleDetailScreenState extends State<ArticleDetailScreen> {
+  List<Map<String, dynamic>> articlesData = [];
+
+  Future<List<dynamic>> fetchArticles() async {
+    String articles = await rootBundle.loadString("lib/utils/articledata.json");
+    return jsonDecode(articles);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchArticles().then((value) {
+      setState(() {
+        articlesData = List<Map<String, dynamic>>.from(value);
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     // fetch the article detail using the articleId
     return Scaffold(
       appBar: AppBar(
-        title: Text(articlesData[articleId -1]['title']),
+        title: Text(articlesData[widget.articleId -1]['title']),
       ),
-      body: Container(
+      body: SingleChildScrollView(
         child: Column(
           children: [
-            Image.asset(articlesData[articleId -1]['imageUrl'], width: double.infinity,),
+            Image.network(articlesData[widget.articleId -1]['thumbnailUrl'], width: double.infinity,),
             SizedBox(height: 20),
             Container(
               alignment: Alignment.centerLeft,
               padding: EdgeInsets.all(20),
-              child: Text(articlesData[articleId -1]['title'],textAlign: TextAlign.start, style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),),
+              child: Text(articlesData[widget.articleId -1]['title'],textAlign: TextAlign.start, style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),),
             ),
             Container(
               alignment: Alignment.centerLeft,
               padding: EdgeInsets.all(20),
-              child: Text(articlesData[articleId -1]['description'], style: TextStyle(fontSize: 20),),
+              child: Text(articlesData[widget.articleId -1]['content'], style: TextStyle(fontSize: 20),),
             ),
           ],
         ),

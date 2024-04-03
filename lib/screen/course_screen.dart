@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:egakko/core/cors.dart';
 import 'package:egakko/screen/CourseDetailScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class CourseScreen extends StatelessWidget {
   static const routeName = '/course';
@@ -14,9 +17,7 @@ class CourseScreen extends StatelessWidget {
           children: [
             TabNewNPopularCourse(),
 
-
             // loop for 10 times
-
           ],
         ),
       ),
@@ -33,71 +34,87 @@ class TabNewNPopularCourse extends StatefulWidget {
 class _TabNewNPopularCourseState extends State<TabNewNPopularCourse> {
   bool isNewCourseSelected = true;
   String searchValue = '';
+  List<Map<String, dynamic>> courseData = [];
+
   // create list of  course mock data
-  List<Map<String, dynamic>> courseData = [
-    {
-      'id': 1,
-      'thumbnailUrl': 'https://picsum.photos/200/300',
-      'title': 'Video Title 1',
-      'rating': 4.5
+  Future<List<dynamic>> fetchCourses() async {
+    String courses = await rootBundle.loadString("lib/utils/coursedata.json");
+    return jsonDecode(courses);
+  }
 
+  @override
+  void initState() {
+    super.initState();
+    fetchCourses().then((value) {
+      setState(() {
+        courseData = List<Map<String, dynamic>>.from(value);
+      });
+    });
+  }
 
-    },
-    {
-      'id': 2,
-      'thumbnailUrl': 'https://picsum.photos/200/300',
-      'title': 'Video Title 2',
-      'rating': 4.5
-
-
-    },
-    {
-      'id': 3,
-      'thumbnailUrl': 'https://picsum.photos/200/300',
-      'title': 'Video Title 3',
-      'rating': 4.5
-
-
-    },
-    {
-      'id': 4,
-      'thumbnailUrl': 'https://picsum.photos/200/300',
-      'title': 'Video Title 4',
-      'rating': 4.5
-
-
-    },
-    {
-      'id': 5,
-      'thumbnailUrl': 'https://picsum.photos/200/300',
-      'title': 'Video Title 5',
-      'rating': 4.5
-
-
-    },
-    {
-      'id': 6,
-      'thumbnailUrl': 'https://picsum.photos/200/300',
-      'title': 'Video Title 6',
-      'rating': 4.5
-
-
-    },
-    {
-      'id': 7,
-      'thumbnailUrl': 'https://picsum.photos/200/300',
-      'title': 'Video Title 7',
-      'rating': 4.5
-    }
-  ];
+  // List<Map<String, dynamic>> courseData = [
+  //   {
+  //     'id': 1,
+  //     'thumbnailUrl': 'https://picsum.photos/200/300',
+  //     'title': 'Video Title 1',
+  //     'rating': 4.5
+  //
+  //
+  //   },
+  //   {
+  //     'id': 2,
+  //     'thumbnailUrl': 'https://picsum.photos/200/300',
+  //     'title': 'Video Title 2',
+  //     'rating': 4.5
+  //
+  //
+  //   },
+  //   {
+  //     'id': 3,
+  //     'thumbnailUrl': 'https://picsum.photos/200/300',
+  //     'title': 'Video Title 3',
+  //     'rating': 4.5
+  //
+  //
+  //   },
+  //   {
+  //     'id': 4,
+  //     'thumbnailUrl': 'https://picsum.photos/200/300',
+  //     'title': 'Video Title 4',
+  //     'rating': 4.5
+  //
+  //
+  //   },
+  //   {
+  //     'id': 5,
+  //     'thumbnailUrl': 'https://picsum.photos/200/300',
+  //     'title': 'Video Title 5',
+  //     'rating': 4.5
+  //
+  //
+  //   },
+  //   {
+  //     'id': 6,
+  //     'thumbnailUrl': 'https://picsum.photos/200/300',
+  //     'title': 'Video Title 6',
+  //     'rating': 4.5
+  //
+  //
+  //   },
+  //   {
+  //     'id': 7,
+  //     'thumbnailUrl': 'https://picsum.photos/200/300',
+  //     'title': 'Video Title 7',
+  //     'rating': 4.5
+  //   }
+  // ];
 
   List<Map<String, dynamic>> _sortedCourse() {
     // copy the articlesData list to avoid modifying the original list
     var sortedCourses = List<Map<String, dynamic>>.from(courseData);
     // filter the articles that contain the searchTerm in their title or description
     sortedCourses = sortedCourses.where((article) {
-      return article['title'].toLowerCase().contains(searchValue.toLowerCase())
-         ;
+      return article['title'].toLowerCase().contains(searchValue.toLowerCase());
     }).toList();
     // sort the filtered list
     sortedCourses.sort((a, b) {
@@ -110,22 +127,17 @@ class _TabNewNPopularCourseState extends State<TabNewNPopularCourse> {
     return sortedCourses;
   }
 
-
-
-
   @override
   Widget build(BuildContext context) {
     return Container(
       child: Column(
         children: [
           Container(
-
             width: double.infinity,
             decoration: BoxDecoration(
               border: Border.all(color: AppColors.appGray4.withOpacity(0.1)),
               borderRadius: BorderRadius.circular(8),
               // border color
-
 
               color: Colors.white,
             ),
@@ -149,22 +161,21 @@ class _TabNewNPopularCourseState extends State<TabNewNPopularCourse> {
                       backgroundColor: isNewCourseSelected
                           ? AppColors.primaryColor
                           : Colors.white,
-                    // btn radius to 0
+                      // btn radius to 0
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
-
                     ),
                     onPressed: () {
                       setState(() {
                         isNewCourseSelected = true;
                       });
                     },
-                    child: Text('New Course' ,
+                    child: Text(
+                      'New Course',
                       style: TextStyle(
-                        color: isNewCourseSelected
-                            ? Colors.white
-                            : Colors.black,
+                        color:
+                            isNewCourseSelected ? Colors.white : Colors.black,
                       ),
                     ),
                   ),
@@ -182,23 +193,24 @@ class _TabNewNPopularCourseState extends State<TabNewNPopularCourse> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: isNewCourseSelected
                           ? Colors.white
-                          :  AppColors.primaryColor,
+                          : AppColors.primaryColor,
                       // btn radius to 0
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular( 8),
+                        borderRadius: BorderRadius.circular(8),
                       ),
-
                     ),
                     onPressed: () {
                       setState(() {
                         isNewCourseSelected = false;
                       });
                     },
-                    child: Text('Popular Course',style: TextStyle(
-                      color: isNewCourseSelected
-                          ? Colors.black
-                          : Colors.white,
-                    ),),
+                    child: Text(
+                      'Popular Course',
+                      style: TextStyle(
+                        color:
+                            isNewCourseSelected ? Colors.black : Colors.white,
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -216,16 +228,19 @@ class _TabNewNPopularCourseState extends State<TabNewNPopularCourse> {
           SizedBox(height: 20.0),
           // loop for 10 times
           ..._sortedCourse().map((course) {
-            return VideoCard(
-              thumbnailUrl: course['thumbnailUrl'],
-              title: course['title'],
-              rating: course['rating'],
-              id: course['id'], // add this line
+            return Column(
+              children: [
+                VideoCard(
+                  thumbnailUrl: course['thumbnailUrl'],
+                  title: course['title'],
+                  // rating: course['rating'],
+                  videoUrl: course['videoUrl'],
+                  id: course['id'], // add this line
+                ),
+                SizedBox(height: 20.0),
+              ],
             );
           }).toList(),
-
-
-
         ],
       ),
     );
@@ -261,7 +276,6 @@ class SearchBar extends StatelessWidget {
             backgroundColor: AppColors.appWhite,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
-
             ),
           ),
           child: Text('Search'),
@@ -381,16 +395,18 @@ class VideoCard extends StatelessWidget {
   final String thumbnailUrl;
   final String title;
   final double rating;
-  final String profileImageUrl = 'https://images.thedirect.com/media/article_full/spider-man-tv-shows.jpg';
+  final String videoUrl;
+  final String profileImageUrl =
+      'https://images.thedirect.com/media/article_full/spider-man-tv-shows.jpg';
   final String channelName = 'Setha Sensei';
   final int id;
 
   VideoCard({
     required this.thumbnailUrl,
     required this.title,
-    required this.rating,
+    this.rating = 5.0,
     required this.id,
-
+    required this.videoUrl,
   });
 
   @override
@@ -422,7 +438,7 @@ class VideoCard extends StatelessWidget {
               width: double.infinity,
               height: 200,
               decoration: BoxDecoration(
-                color: Colors.yellow,
+                color: AppColors.primaryColor,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(8),
                   topRight: Radius.circular(8),
@@ -439,16 +455,18 @@ class VideoCard extends StatelessWidget {
               padding: EdgeInsets.all(12.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
                 children: [
+                  Container(
 
-                  Text(title ,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+                    child: Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      overflow: TextOverflow.clip,
                     ),
-                    overflow: TextOverflow.ellipsis,
-
+                    width: 350,
                   ),
                   Row(
                     children: [
@@ -476,27 +494,23 @@ class VideoCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(channelName),
-                      Text('Cybersecurity' , style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w100,
-                      ),),
+                      Text(
+                        'Cybersecurity',
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w100,
+                        ),
+                      ),
                     ],
-
                   ),
                 ],
               ),
-            )
+            ),
+
           ],
         ),
       ),
-    )
-    ;
-
-
-
+    );
   }
 }
-
-
-

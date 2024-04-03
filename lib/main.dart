@@ -1,3 +1,4 @@
+import 'package:egakko/components/UserStatus.dart';
 import 'package:egakko/core/cors.dart';
 import 'package:egakko/screen/article_screen.dart';
 import 'package:egakko/screen/course_screen.dart';
@@ -5,10 +6,16 @@ import 'package:egakko/screen/home_screen.dart';
 import 'package:egakko/screen/onboarding_screen.dart';
 import 'package:egakko/screen/profile_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 
 void main() {
-  runApp(MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => UserStatus(),
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

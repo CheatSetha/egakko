@@ -1,114 +1,98 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
-class CourseDetailScreen extends StatelessWidget {
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+
+class CourseDetailScreen extends StatefulWidget {
   final int courseId;
 
   CourseDetailScreen({required this.courseId});
-  List<Map<String, dynamic>> courseData = [
-    {
-      'id': 1,
-      'thumbnailUrl': 'https://picsum.photos/200/300',
-      'title': 'Video Title 1',
-      'rating': 4.5
 
+  @override
+  _CourseDetailScreenState createState() => _CourseDetailScreenState();
+}
 
-    },
-    {
-      'id': 2,
-      'thumbnailUrl': 'https://picsum.photos/200/300',
-      'title': 'Video Title 2',
-      'rating': 4.5
+class _CourseDetailScreenState extends State<CourseDetailScreen> {
+  List<Map<String, dynamic>> courseData = [];
 
+  Future<List<dynamic>> fetchCourses() async {
+    String courses = await rootBundle.loadString("lib/utils/coursedata.json");
+    return jsonDecode(courses);
+  }
 
-    },
-    {
-      'id': 3,
-      'thumbnailUrl': 'https://picsum.photos/200/300',
-      'title': 'Video Title 3',
-      'rating': 4.5
-
-
-    },
-    {
-      'id': 4,
-      'thumbnailUrl': 'https://picsum.photos/200/300',
-      'title': 'Video Title 4',
-      'rating': 4.5
-
-
-    },
-    {
-      'id': 5,
-      'thumbnailUrl': 'https://picsum.photos/200/300',
-      'title': 'Video Title 5',
-      'rating': 4.5
-
-
-    },
-    {
-      'id': 6,
-      'thumbnailUrl': 'https://picsum.photos/200/300',
-      'title': 'Video Title 6',
-      'rating': 4.5
-
-
-    },
-    {
-      'id': 7,
-      'thumbnailUrl': 'https://picsum.photos/200/300',
-      'title': 'Video Title 7',
-      'rating': 4.5
-    }
-  ];
+  @override
+  void initState() {
+    super.initState();
+    fetchCourses().then((value) {
+      setState(() {
+        courseData = List<Map<String, dynamic>>.from(value);
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     // fetch the course detail using the courseId
     return Scaffold(
       appBar: AppBar(
-        title: Text(courseData[courseId -1]['title']),
+        title: Text(courseData[widget.courseId - 1]['title']),
       ),
       body: Column(
         children: [
-          Container(
-            width: double.infinity,
-            height: 200,
-            child: Image.network(courseData[courseId -1]['thumbnailUrl'], fit: BoxFit.fitWidth,),
+          Center(
+
+
+              child: YoutubePlayer(
+                controller: YoutubePlayerController(
+                  initialVideoId: YoutubePlayer.convertUrlToId(
+                    courseData[widget.courseId - 1]['videoUrl'] ?? '',
+                  )!,
+                  flags: YoutubePlayerFlags(
+                    autoPlay: true,
+                    mute: false,
+                  ),
+                ),
+                showVideoProgressIndicator: true,
+              ),
+
           ),
           SizedBox(height: 10),
           Container(
             alignment: Alignment.centerLeft,
             padding: EdgeInsets.all(10),
-            child: Text(' ${courseData[courseId -1]['title']}',style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold
-            ),),
+            child: Text(
+              ' ${courseData[widget.courseId - 1]['title']}',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
           ),
           Container(
             padding: EdgeInsets.all(12.0),
             child: Row(
               children: [
                 CircleAvatar(
-                  backgroundImage: NetworkImage('https://images.thedirect.com/media/article_full/spider-man-tv-shows.jpg'),
+                  backgroundImage: NetworkImage(
+                      'https://images.thedirect.com/media/article_full/spider-man-tv-shows.jpg'),
                 ),
                 SizedBox(width: 10.0),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text("Setha Sensei"),
-                    Text('Cybersecurity' , style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w100,
-                    ),),
+                    Text(
+                      'Cybersecurity',
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w100,
+                      ),
+                    ),
                   ],
-
                 ),
               ],
             ),
           ),
           SizedBox(height: 10),
-
           Expanded(
             child: _buildVideoList(),
           )
@@ -116,23 +100,27 @@ class CourseDetailScreen extends StatelessWidget {
       ),
     );
     // display the course detail
-
   }
+
   // widget to list all the videos but not the current video id
   Widget _buildVideoList() {
     return ListView.builder(
       itemCount: courseData.length,
       itemBuilder: (context, index) {
-        if (courseData[index]['id'] != courseId) {
+        if (courseData[index]['id'] != widget.courseId) {
           return Container(
-
             child: ListTile(
               title: CourseCard(
                 imageUrl: courseData[index]['thumbnailUrl'],
                 title: courseData[index]['title'],
               ),
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => CourseDetailScreen(courseId: courseData[index]['id'],)));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => CourseDetailScreen(
+                              courseId: courseData[index]['id'],
+                            )));
               },
             ),
           );
@@ -213,7 +201,3 @@ class CourseCard extends StatelessWidget {
     );
   }
 }
-
-
-
-
