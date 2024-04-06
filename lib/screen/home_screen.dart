@@ -1,18 +1,19 @@
+import 'dart:convert';
+
+import 'package:egakko/components/UserStatus.dart';
 import 'package:egakko/components/bottom_navigation_bar.dart';
 import 'package:egakko/core/cors.dart';
+import 'package:egakko/screen/CourseDetailScreen.dart';
 import 'package:egakko/screen/article_screen.dart';
 import 'package:egakko/screen/course_screen.dart';
-import 'package:egakko/screen/login_screen.dart';
-
 import 'package:egakko/screen/profile_screen.dart';
 import 'package:flutter/material.dart';
-
-
-
-
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/home';
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -37,7 +38,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey, // assign the _scaffoldKey here
+      key: _scaffoldKey,
+      // assign the _scaffoldKey here
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.menu), // This is the drawer icon
@@ -54,59 +56,30 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class HomeTab extends StatelessWidget {
-  List<Map<String, dynamic>> coursedata  =  [
-    {
-      "id": 1,
-      "imagePath": "https://imgs.search.brave.com/FWLGYz_ismHpqRTDDZqvh3dnNKfNUAYrIPSKzBLDRl8/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5nZWVrc2Zvcmdl/ZWtzLm9yZy93cC1j/b250ZW50L2Nkbi11/cGxvYWRzLzIwMjAw/NjA1MjI1NTU1L0hv/dy1TaG91bGQtSS1T/dGFydC1MZWFybmlu/Zy1FdGhpY2FsLUhh/Y2tpbmctb24tTXkt/T3duLnBuZw",
-      "title": "Intro to Programming Training Course"
-    },
-    {
-      "id": 2,
-      "imagePath": "https://picsum.photos/id/2/200/300",
-      "title": "Course 2"
-    },
-    {
-      "id": 3,
-      "imagePath": "https://picsum.photos/id/3/200/300",
-      "title": "Course 3"
-    },
-    {
-      "id": 4,
-      "imagePath": "https://picsum.photos/id/4/200/300",
-      "title": "Course 4"
-    },
-    {
-      "id": 5,
-      "imagePath": "https://picsum.photos/id/5/200/300",
-      "title": "Course 5"
-    },
-    {
-      "id": 6,
-      "imagePath": "https://picsum.photos/id/6/200/300",
-      "title": "Course 6"
-    },
-    {
-      "id": 7,
-      "imagePath": "https://picsum.photos/id/7/200/300",
-      "title": "Course 7"
-    },
-    {
-      "id": 8,
-      "imagePath": "https://picsum.photos/id/8/200/300",
-      "title": "Course 8"
-    },
-    {
-      "id": 9,
-      "imagePath": "https://picsum.photos/id/9/200/300",
-      "title": "Course 9"
-    },
-    {
-      "id": 10,
-      "imagePath": "https://picsum.photos/id/10/200/300",
-      "title": "Course 10"
-    }
-  ];
+class HomeTab extends StatefulWidget {
+  @override
+  _HomeTabState createState() => _HomeTabState();
+}
+
+class _HomeTabState extends State<HomeTab> {
+  @override
+  List<Map<String, dynamic>> coursedata = [];
+
+  Future<List<dynamic>> fetchCourses() async {
+    String courses = await rootBundle.loadString("lib/utils/coursedata.json");
+    return jsonDecode(courses);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchCourses().then((value) {
+      setState(() {
+        coursedata = List<Map<String, dynamic>>.from(value);
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -120,7 +93,7 @@ class HomeTab extends StatelessWidget {
               width: double.infinity,
               margin: EdgeInsets.only(bottom: 30),
               child: Text(
-                "Hi, Setha",
+                "Welcome to E-Gakko!",
                 style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.normal,
@@ -166,7 +139,8 @@ class HomeTab extends StatelessWidget {
                     ))),
             SizedBox(height: 20),
             for (var i = 0; i < coursedata.length; i++) ...[
-              _buildCardPopCourse(context, coursedata[i]['title'], coursedata[i]['imagePath'],),
+              _buildCardPopCourse(context, coursedata[i]['id'],
+                  coursedata[i]['title'], coursedata[i]['thumbnailUrl']),
               SizedBox(height: 20),
             ]
           ],
@@ -176,61 +150,67 @@ class HomeTab extends StatelessWidget {
   }
 }
 
-Widget _buildCardPopCourse(BuildContext context, String title, String thumnailUrl) {
-  return Align(
-
-   
-    child: Container(
-      padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 5,
-            offset: Offset(0, 3), // changes position of shadow
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Container(
-                  width: 120,
+Widget _buildCardPopCourse(
+    BuildContext context, int id, String title, String thumnailUrl) {
+  return GestureDetector(
+    onTap: () {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => CourseDetailScreen(courseId: id)));
+    },
+    child: Align(
+      child: Container(
+        padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.1),
+              spreadRadius: 1,
+              blurRadius: 5,
+              offset: Offset(0, 3), // changes position of shadow
+            ),
+          ],
+        ),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Container(
+                    width: 120,
+                    height: 85,
+                    margin: EdgeInsets.only(
+                      left: 8,
+                    ),
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: NetworkImage(thumnailUrl),
+                          fit: BoxFit.cover,
+                        ),
+                        borderRadius: BorderRadius.circular(8),
+                        color: AppColors.appBlack)),
+                Container(
+                  width: 250,
                   height: 85,
-                  margin: EdgeInsets.only(
-                    left: 8,
-                  ),
-                  decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage(
-                            thumnailUrl),
-                        fit: BoxFit.cover,
-                      ),
-                      borderRadius: BorderRadius.circular(8),
-                      color: AppColors.appBlack)),
-              Container(
-                width: 250,
-                height: 85,
-                margin: EdgeInsets.only(left: 13, top: 5, bottom: 15),
-                child: Text(
-                  title,
-                  maxLines: 2,
-                  overflow: TextOverflow.clip,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.appBlack,
+                  margin: EdgeInsets.only(left: 13, top: 5, bottom: 15),
+                  child: Text(
+                    title,
+                    maxLines: 2,
+                    overflow: TextOverflow.clip,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.appBlack,
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     ),
   );
@@ -243,56 +223,70 @@ Widget _buildEleven(BuildContext context) {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         // add flex of 2 container
-        Container(
-          height: 170,
-          width: 170,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.1),
-                spreadRadius: 1,
-                blurRadius: 5,
-                offset: Offset(0, 3), // changes position of shadow
-              ),
-            ],
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Icon(Icons.book, size: 50, color: Colors.purple),
-              SizedBox(width: 10),
-              Text("Course", style: TextStyle(fontSize: 16)),
-            ],
+        //add click to go to course screen
+        GestureDetector(
+          onTap: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => CourseScreen()));
+          },
+          child: Container(
+            height: 170,
+            width: 170,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.1),
+                  spreadRadius: 1,
+                  blurRadius: 5,
+                  offset: Offset(0, 3), // changes position of shadow
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(Icons.book, size: 50, color: Colors.purple),
+                SizedBox(width: 10),
+                Text("Courses", style: TextStyle(fontSize: 16)),
+              ],
+            ),
           ),
         ),
-        Container(
-          height: 170,
-          width: 170,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.1),
-                spreadRadius: 1,
-                blurRadius: 5,
-                offset: Offset(0, 3), // changes position of shadow
-              ),
-            ],
+        //add click to go to article screen
+        GestureDetector(
+          onTap: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => ArticleScreen()));
+          },
+          child: Container(
+            height: 170,
+            width: 170,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.1),
+                  spreadRadius: 1,
+                  blurRadius: 5,
+                  offset: Offset(0, 3), // changes position of shadow
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(Icons.article, size: 50, color: Colors.purple),
+                SizedBox(width: 10),
+                Text("Articles", style: TextStyle(fontSize: 16)),
+              ],
+            ),
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Icon(Icons.article, size: 50, color: Colors.purple),
-              SizedBox(width: 10),
-              Text("Articles", style: TextStyle(fontSize: 16)),
-            ],
-          ),
-        )
+        ),
       ],
     ),
   );
@@ -371,93 +365,58 @@ Widget _buildBannerSlide(BuildContext context) {
 }
 
 Widget _buildDrawer(BuildContext context) {
+  bool isLoggedIn = Provider.of<UserStatus>(context).isLoggedIn;
   return Drawer(
     child: ListView(
       padding: EdgeInsets.zero,
       children: <Widget>[
         DrawerHeader(
-
-          child: Container(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-               Container(
-
-                 width: 100,
-                  height: 100,
-                 child:  CircleAvatar(
-                     radius: 50,
-
-
-                     backgroundImage: NetworkImage(
-                         'https://images.thedirect.com/media/article_full/spider-man-tv-shows.jpg'
-
-                     )
-                 ),
-               ),
-                SizedBox(height: 30),
-               Container(
-                 padding: EdgeInsets.all(10),
-                 margin: EdgeInsets.only( left: 10),
-                 child:  Text(
-                   'Setha Sensei',
-                   style: TextStyle(
-                     color: Colors.white,
-                     fontSize: 20,
-                   ),
-                 ),
-               )
-
-              ],
+          child: Text(
+            'E-Gakko',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 24,
             ),
           ),
           decoration: BoxDecoration(
-            color: Colors.blue,
+            color: Colors.purple,
           ),
         ),
         ListTile(
-
+          leading: Icon(Icons.home),
           title: Text('Home'),
           onTap: () {
-            // Update the state of the app
-            Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
-            // ...
-            // Then close the drawer
-            Navigator.pop(context);
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => HomeScreen()));
           },
         ),
         ListTile(
+          leading: Icon(Icons.book),
           title: Text('Courses'),
           onTap: () {
-            // Update the state of the app
-            Navigator.push(context, MaterialPageRoute(builder: (context) => CourseScreen()));
-            // ...
-            // Then close the drawer
-            Navigator.pop(context);
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => CourseScreen()));
           },
         ),
         ListTile(
+          leading: Icon(Icons.article),
           title: Text('Articles'),
           onTap: () {
-            // Update the state of the app
-            Navigator.push(context, MaterialPageRoute(builder: (context) => ArticleScreen()));
-            // ...
-            // Then close the drawer
-            Navigator.pop(context);
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => ArticleScreen()));
           },
         ),
         ListTile(
-          title: Text('Login'),
-          onTap: () {
-            // Update the state of the app
-            Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
-            // ...
-            // Then close the drawer
-            Navigator.pop(context);
-          },
+          leading: Icon(Icons.login, color: Colors.red),
+          title: Text(isLoggedIn ? 'Logout' : 'Login'),
         ),
-        
+        SizedBox(height: 340),
+        Text(
+          "version 1.0.0",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              color: Colors.grey, fontSize: 12, fontFamily: "Poppins"),
+        ),
       ],
     ),
   );

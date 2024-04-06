@@ -137,6 +137,14 @@ class _TabNewNPopularArticleState extends State<TabNewNPopularArticle> {
     return Container(
       child: Column(
         children: [
+          SearchBar(
+            onSearch: (value) {
+              setState(() {
+                searchValue = value;
+              });
+            },
+          ),
+          SizedBox(height: 20.0),
           Container(
 
             width: double.infinity,
@@ -144,8 +152,6 @@ class _TabNewNPopularArticleState extends State<TabNewNPopularArticle> {
               border: Border.all(color: AppColors.appGray4.withOpacity(0.1)),
               borderRadius: BorderRadius.circular(8),
               // border color
-
-
               color: Colors.white,
             ),
             height: 50,
@@ -153,6 +159,8 @@ class _TabNewNPopularArticleState extends State<TabNewNPopularArticle> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+
+
                 Container(
                   width: 208,
                   height: 50,
@@ -223,13 +231,7 @@ class _TabNewNPopularArticleState extends State<TabNewNPopularArticle> {
               ],
             ),
           ),
-          SearchBar(
-            onSearch: (value) {
-              setState(() {
-                searchValue = value;
-              });
-            },
-          ),
+
           SizedBox(height: 20.0),
           // for (var article in _sortedArticles())
           //   ArticleCard(
@@ -268,8 +270,40 @@ class SearchBar extends StatelessWidget {
         Expanded(
           child: TextField(
             controller: _controller,
+            style: TextStyle(
+              fontSize: 16.0,
+              color: Colors.black87,
+            ),
             decoration: InputDecoration(
-              hintText: 'Search article',
+              filled: true,
+              fillColor: Colors.white,
+              hintText: 'Search',
+              hintStyle: TextStyle(
+                color: Colors.grey[400],
+                fontSize: 16.0,
+              ),
+              contentPadding: EdgeInsets.symmetric(
+                vertical: 15.0,
+                horizontal: 20.0,
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: BorderSide(
+                  color: Colors.blue,
+                  width: 2.0,
+                ),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: BorderSide(
+                  color: Colors.grey[300] ?? Colors.grey,
+                  width: 1.0,
+                ),
+              ),
+              suffixIcon: Icon(
+                Icons.search,
+                color: Colors.grey[400],
+              ),
             ),
           ),
         ),
@@ -278,13 +312,24 @@ class SearchBar extends StatelessWidget {
             onSearch(_controller.text);
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.appWhite,
+            backgroundColor: AppColors.white, // background color
+
+            // text color
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(10.0), // same as TextField
 
             ),
+            padding: EdgeInsets.symmetric(
+              vertical: 20.0,
+              horizontal: 20.0,
+            ),
           ),
-          child: Text('Search'),
+          child: Text(
+            'Search',
+            style: TextStyle(
+              fontSize: 16.0,
+            ),
+          ),
         ),
       ],
     );

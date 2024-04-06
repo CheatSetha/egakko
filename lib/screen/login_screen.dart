@@ -4,15 +4,13 @@ import 'package:egakko/screen/register_screen.dart';
 import 'package:egakko/widgets/custom_button.dart';
 import 'package:egakko/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatelessWidget {
   static const routeName = '/login';
-  var emailController = TextEditingController(
-    
-  );
+  var emailController = TextEditingController();
   var passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,11 +35,11 @@ class LoginScreen extends StatelessWidget {
             CustomTextField(
               hintText: 'Email',
               keyboardType: TextInputType.emailAddress,
-
-
+              controller: emailController,
             ),
             SizedBox(height: 20),
             CustomTextField(
+              controller: passwordController,
               hintText: 'Password',
               obscureText: true,
             ),
@@ -73,7 +71,8 @@ class LoginScreen extends StatelessWidget {
                 String username = emailController.text;
                 String password = passwordController.text;
 
-                if (username == 'setha' && password == "123") {
+                if (username == 'setha' && password == '123' ||
+                    username == 'chhaiteth' && password == '123') {
                   Provider.of<UserStatus>(context, listen: false).login();
                   Navigator.pushReplacement(
                     context,
@@ -82,7 +81,9 @@ class LoginScreen extends StatelessWidget {
                 } else {
                   // Show an error message
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Invalid username or password $username $password')),
+                  const  SnackBar(
+                        content: Text(
+                            'Invalid username or password!')),
                   );
                 }
               },
@@ -133,6 +134,7 @@ class LoginScreen extends StatelessWidget {
                       child: Container(
                           width: 100,
                           height: 60,
+                          padding: EdgeInsets.all(8.0),
                           decoration: BoxDecoration(
                             border: Border.all(
                               color: Color.fromARGB(112, 55, 54, 54)
@@ -140,36 +142,17 @@ class LoginScreen extends StatelessWidget {
                               width: 1,
                             ),
                             borderRadius: BorderRadius.circular(10),
-                            image: DecorationImage(
-                              // assets\images\svg\authentication.svg
-                              image: AssetImage(
-                                  'assets/images/png/facebook.png'),
+                          ),
+                          child: Container(
+                            width: 30,
+                            height: 30,
+                            child: Image.asset(
+                              'assets/images/png/facebook.png',
+                              width: 30, height: 30,
+                              fit: BoxFit.fitHeight,
+                              // fit: BoxFit.fill,
                             ),
                           )),
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: TextButton(
-                      onPressed: () {},
-                      child: Padding(
-                        padding: EdgeInsets.all(8.0), // adjust the padding as needed
-                        child: Container(
-                          width: 100,
-                          height: 60,
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Color.fromARGB(112, 55, 54, 54).withOpacity(0.1),
-                              width: 1,
-                            ),
-                            borderRadius: BorderRadius.circular(10),
-                            image: DecorationImage(
-                              image: AssetImage('assets/images/png/google.png'),
-                              fit: BoxFit.fitHeight,
-                            ),
-                          ),
-                        ),
-                      ),
                     ),
                   ),
                   Align(
@@ -179,7 +162,7 @@ class LoginScreen extends StatelessWidget {
                       child: Container(
                           width: 100,
                           height: 60,
-
+                          padding: EdgeInsets.all(8.0),
                           decoration: BoxDecoration(
                             border: Border.all(
                               color: Color.fromARGB(112, 55, 54, 54)
@@ -187,26 +170,45 @@ class LoginScreen extends StatelessWidget {
                               width: 1,
                             ),
                             borderRadius: BorderRadius.circular(10),
-                            // image: DecorationImage(
-                            //   // assets\images\svg\authentication.svg
-                            //   image: AssetImage(
-                            //       'assets/images/png/apple.png'),
-                            // ),
-
                           ),
-                        child: Container(
-                          width: 30,
-                          height: 30,
-                          child: Image.asset(
-                            'assets/images/png/apple.png',
-                            width: 30, height: 30,
-                            fit: BoxFit.fitHeight,
-                            // fit: BoxFit.fill,
-
+                          child: Container(
+                            width: 30,
+                            height: 30,
+                            child: Image.asset(
+                              'assets/images/png/google.png',
+                              width: 30, height: 30,
+                              fit: BoxFit.fitHeight,
+                              // fit: BoxFit.fill,
+                            ),
+                          )),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: TextButton(
+                      onPressed: () {},
+                      child: Container(
+                          width: 100,
+                          height: 60,
+                          padding: EdgeInsets.all(8.0),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Color.fromARGB(112, 55, 54, 54)
+                                  .withOpacity(0.1),
+                              width: 1,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
                           ),
-                        )
-
-                      ),
+                          child: Container(
+                            width: 30,
+                            height: 30,
+                            child: Image.asset(
+                              'assets/images/png/apple.png',
+                              width: 30, height: 30,
+                              fit: BoxFit.fitHeight,
+                              // fit: BoxFit.fill,
+                            ),
+                          )),
                     ),
                   ),
                 ],
@@ -215,7 +217,6 @@ class LoginScreen extends StatelessWidget {
 
             // text with link to register at the bottom "Don't have an account? Register"
             Container(
-              
               margin: EdgeInsets.only(top: 70),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -231,7 +232,10 @@ class LoginScreen extends StatelessWidget {
                   TextButton(
                     onPressed: () {
                       // Handle register
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterScreen()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => RegisterScreen()));
                     },
                     child: Text(
                       'Register',
@@ -240,7 +244,6 @@ class LoginScreen extends StatelessWidget {
                         fontSize: 14,
                         fontFamily: 'Poppins',
                       ),
-                      
                     ),
                   ),
                 ],

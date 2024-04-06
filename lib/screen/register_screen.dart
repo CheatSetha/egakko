@@ -6,8 +6,10 @@ import 'package:flutter/material.dart';
 
 class RegisterScreen extends StatelessWidget {
   static const routeName = '/register';
+  var nameController = TextEditingController();
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
+  var confirmPasswordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -32,21 +34,25 @@ class RegisterScreen extends StatelessWidget {
             ),
             CustomTextField(
               hintText: 'Name',
+              controller: nameController,
             ),
             SizedBox(height: 20),
             CustomTextField(
               hintText: 'Email',
+              controller: emailController,
               keyboardType: TextInputType.emailAddress,
             ),
             SizedBox(height: 20),
             CustomTextField(
               hintText: 'Password',
+              controller: passwordController,
               obscureText: true,
             ),
             SizedBox(height: 20),
             CustomTextField(
               hintText: 'Confirm Password',
               obscureText: true,
+              controller: confirmPasswordController,
             ),
             SizedBox(height: 20),
             CustomButton(
@@ -101,6 +107,7 @@ class RegisterScreen extends StatelessWidget {
                       child: Container(
                           width: 100,
                           height: 60,
+                          padding: EdgeInsets.all(8.0),
                           decoration: BoxDecoration(
                             border: Border.all(
                               color: Color.fromARGB(112, 55, 54, 54)
@@ -108,10 +115,15 @@ class RegisterScreen extends StatelessWidget {
                               width: 1,
                             ),
                             borderRadius: BorderRadius.circular(10),
-                            image: DecorationImage(
-                              // assets\images\svg\authentication.svg
-                              image:
-                                  AssetImage('assets/images/png/facebook.png'),
+                          ),
+                          child: Container(
+                            width: 30,
+                            height: 30,
+                            child: Image.asset(
+                              'assets/images/png/facebook.png',
+                              width: 30, height: 30,
+                              fit: BoxFit.fitHeight,
+                              // fit: BoxFit.fill,
                             ),
                           )),
                     ),
@@ -123,6 +135,7 @@ class RegisterScreen extends StatelessWidget {
                       child: Container(
                           width: 100,
                           height: 60,
+                          padding: EdgeInsets.all(8.0),
                           decoration: BoxDecoration(
                             border: Border.all(
                               color: Color.fromARGB(112, 55, 54, 54)
@@ -130,9 +143,15 @@ class RegisterScreen extends StatelessWidget {
                               width: 1,
                             ),
                             borderRadius: BorderRadius.circular(10),
-                            image: DecorationImage(
-                              // assets\images\svg\authentication.svg
-                              image: AssetImage('assets/images/png/google.png'),
+                          ),
+                          child: Container(
+                            width: 30,
+                            height: 30,
+                            child: Image.asset(
+                              'assets/images/png/google.png',
+                              width: 30, height: 30,
+                              fit: BoxFit.fitHeight,
+                              // fit: BoxFit.fill,
                             ),
                           )),
                     ),
@@ -144,6 +163,7 @@ class RegisterScreen extends StatelessWidget {
                       child: Container(
                           width: 100,
                           height: 60,
+                          padding: EdgeInsets.all(8.0),
                           decoration: BoxDecoration(
                             border: Border.all(
                               color: Color.fromARGB(112, 55, 54, 54)
@@ -151,9 +171,15 @@ class RegisterScreen extends StatelessWidget {
                               width: 1,
                             ),
                             borderRadius: BorderRadius.circular(10),
-                            image: DecorationImage(
-                              // assets\images\svg\authentication.svg
-                              image: AssetImage('assets/images/png/apple.png'),
+                          ),
+                          child: Container(
+                            width: 30,
+                            height: 30,
+                            child: Image.asset(
+                              'assets/images/png/apple.png',
+                              width: 30, height: 30,
+                              fit: BoxFit.fitHeight,
+                              // fit: BoxFit.fill,
                             ),
                           )),
                     ),

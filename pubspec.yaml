@@ -81,6 +81,7 @@ flutter:
     - assets/images/png/course_thumnail.png
     - lib/utils/coursedata.json
     - lib/utils/articledata.json
+    - assets/images/png/drawer.png
       
 
   # An image asset can refer to one or more resolution-specific "variants", see
